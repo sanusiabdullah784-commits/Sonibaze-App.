@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    
+    <!-- PWA & Mobile Meta Tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#9333ea" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="SoniBaze" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    
+    <!-- PWA Manifest & Icons -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="apple-touch-icon" href="/icon-192x192.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192x192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512x512.png" />
+    
+    <!-- SEO Meta Tags -->
+    <title>SoniBaze Digital | Premium Student Management App</title>
+    <meta name="description" content="Manage your IT training, Computer Networking, and Staff Training courses with real-time countdowns, schedules, and easy payment tracking at SoniBaze Digital." />
+    <meta name="keywords" content="SoniBaze, Student Management, Computer Networking, IT Training, Abuja, Staff Training, Digital Learning" />
+    <meta name="author" content="SoniBaze Digital" />
+    
+    <!-- Open Graph (For beautiful links on WhatsApp/Facebook) -->
+    <meta property="og:title" content="SoniBaze Digital Student App" />
+    <meta property="og:description" content="Join the premium digital student management platform in Abuja." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.sonibaze.ng" />
+    <meta property="og:image" content="/icon-512x512.png" />
+
+    <!-- Premium Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Register Service Worker for PWA Offline & Push Support -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then((registration) => {
+              console.log('✅ Service Worker registered successfully:', registration.scope);
+            })
+            .catch((error) => {
+              console.log('❌ Service Worker registration failed:', error);
+            });
+        });
+      }
+    </script>
+  </body>
+</html>
