@@ -83,7 +83,8 @@ export default function AdminDashboard() {
   const unreadCount = notificationsList.filter(n => !n.read).length;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pl-64 transition-colors duration-500">
+    // FIXED: Changed 'pl-64' to 'md:pl-64' for mobile responsiveness
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 md:pl-64 transition-colors duration-500">
       <Navbar />
       
       {/* Premium Toast Notification */}
@@ -116,24 +117,24 @@ export default function AdminDashboard() {
           className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4"
         >
           <div>
-            <h1 className="text-3xl font-bold text-gray-800 dark:text-white transition-colors">Admin Command Center 👨‍💼</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white transition-colors">Admin Command Center 👨‍💼</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-1 transition-colors">Manage students, courses, and financials.</p>
           </div>
           
-          <div className="flex gap-3 relative">
+          <div className="flex gap-3 relative w-full md:w-auto">
             {/* 1. Working Export Button */}
             <button 
               onClick={handleExport}
-              className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm"
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition shadow-sm text-sm font-semibold"
             >
-              <Download className="w-4 h-4" /> Export Report
+              <Download className="w-4 h-4" /> Export
             </button>
 
             {/* 2. Working Notifications Button */}
-            <div className="relative" ref={dropdownRef}>
+            <div className="relative flex-1 md:flex-none">
               <button 
                 onClick={() => setShowNotifDropdown(!showNotifDropdown)}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-green-600 text-white rounded-xl hover:shadow-lg hover:shadow-purple-500/30 transition font-semibold"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-green-600 text-white rounded-xl hover:shadow-lg hover:shadow-purple-500/30 transition font-semibold text-sm"
               >
                 <Bell className="w-4 h-4" /> Notifications
                 {unreadCount > 0 && (
@@ -186,7 +187,7 @@ export default function AdminDashboard() {
         </motion.div>
 
         {/* Statistics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
           {[
             { title: 'Total Students', value: '425', trend: '+12%', icon: Users, color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' },
             { title: 'Pending Approval', value: String(pendingStudents.length), trend: 'Live', icon: Clock, color: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400' },
@@ -198,18 +199,18 @@ export default function AdminDashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-300"
+              className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-300"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className={`p-3 rounded-xl ${stat.color}`}>
-                  <stat.icon className="w-6 h-6" />
+                  <stat.icon className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
-                <span className="text-xs font-bold text-green-600 dark:text-green-400 flex items-center gap-1 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full">
+                <span className="text-[10px] md:text-xs font-bold text-green-600 dark:text-green-400 flex items-center gap-1 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full">
                   <TrendingUp className="w-3 h-3" /> {stat.trend}
                 </span>
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{stat.title}</p>
-              <p className="text-3xl font-bold text-gray-800 dark:text-white mt-1">{stat.value}</p>
+              <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 font-medium">{stat.title}</p>
+              <p className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mt-1">{stat.value}</p>
             </motion.div>
           ))}
         </div>
@@ -222,10 +223,10 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
-            className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
+            className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 md:p-6"
           >
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-              <h3 className="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+              <h3 className="text-lg md:text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
                 <Clock className="w-5 h-5 text-yellow-500" /> Pending Approvals
               </h3>
               <div className="relative w-full sm:w-64">
@@ -251,9 +252,9 @@ export default function AdminDashboard() {
                   <thead>
                     <tr className="border-b border-gray-100 dark:border-gray-700 text-xs uppercase text-gray-500 dark:text-gray-400 font-semibold">
                       <th className="pb-3 pl-2">Student</th>
-                      <th className="pb-3">Course</th>
+                      <th className="pb-3 hidden sm:table-cell">Course</th>
                       <th className="pb-3">Amount</th>
-                      <th className="pb-3">Status</th>
+                      <th className="pb-3 hidden md:table-cell">Status</th>
                       <th className="pb-3 text-right pr-2">Actions</th>
                     </tr>
                   </thead>
@@ -262,18 +263,19 @@ export default function AdminDashboard() {
                       <tr key={student.id} className="border-b border-gray-50 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
                         <td className="py-4 pl-2">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 bg-gradient-to-br from-purple-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
+                            <div className="w-9 h-9 bg-gradient-to-br from-purple-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
                               {student.name.charAt(0)}
                             </div>
                             <div>
                               <p className="font-semibold text-gray-800 dark:text-white">{student.name}</p>
                               <p className="text-xs text-gray-500 dark:text-gray-400">{student.id} • {student.date}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400 sm:hidden">{student.course}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="py-4 text-gray-600 dark:text-gray-300">{student.course}</td>
+                        <td className="py-4 text-gray-600 dark:text-gray-300 hidden sm:table-cell">{student.course}</td>
                         <td className="py-4 font-semibold text-gray-800 dark:text-white">{student.amount}</td>
-                        <td className="py-4">
+                        <td className="py-4 hidden md:table-cell">
                           <span className="text-xs font-semibold px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-full">
                             {student.status}
                           </span>
@@ -304,9 +306,9 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 md:p-6"
           >
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
+            <h3 className="text-lg md:text-xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
               <Activity className="w-5 h-5 text-purple-600 dark:text-purple-400" /> Recent Activity
             </h3>
             

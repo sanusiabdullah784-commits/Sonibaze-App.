@@ -53,7 +53,6 @@ export default function AdminMessages() {
   }, []);
 
   const fetchAllMessages = async () => {
-    // Fetch ALL messages so admin can see everything
     const { data, error } = await supabase
       .from('messages')
       .select('*')
@@ -61,7 +60,6 @@ export default function AdminMessages() {
 
     if (!error && data) {
       setAllMessages(data);
-      // Auto-select the first student who messaged if none is selected
       if (!selectedStudentId) {
         const firstStudent = data.find(m => m.sender_role === 'student');
         if (firstStudent) setSelectedStudentId(firstStudent.sender_id);
@@ -69,10 +67,8 @@ export default function AdminMessages() {
     }
   };
 
-  // Group messages by student to create the conversation list
   const conversations = React.useMemo(() => {
     const studentMap = new Map();
-    
     allMessages.forEach(msg => {
       if (msg.sender_role === 'student') {
         if (!studentMap.has(msg.sender_id)) {
@@ -81,10 +77,9 @@ export default function AdminMessages() {
             name: msg.sender_name || 'Unknown Student',
             lastMessage: msg.message_text,
             time: msg.created_at,
-            unread: false // Can be enhanced later with read status
+            unread: false
           });
         } else {
-          // Update last message
           studentMap.set(msg.sender_id, {
             ...studentMap.get(msg.sender_id),
             lastMessage: msg.message_text,
@@ -93,15 +88,13 @@ export default function AdminMessages() {
         }
       }
     });
-
     return Array.from(studentMap.values()).sort((a, b) => 
       new Date(b.time).getTime() - new Date(a.time).getTime()
     );
   }, [allMessages]);
 
-  // Filter messages for the currently selected student
   const activeMessages = allMessages.filter(
-    msg => msg.sender_id === selectedStudentId || (msg.sender_role === 'admin' && msg.recipient_role === 'student' && selectedStudentId) // Simplified for demo
+    msg => msg.sender_id === selectedStudentId || (msg.sender_role === 'admin' && msg.recipient_role === 'student' && selectedStudentId)
   );
 
   const handleSend = async (e: React.FormEvent) => {
@@ -139,27 +132,30 @@ export default function AdminMessages() {
   const selectedStudent = conversations.find(s => s.id === selectedStudentId);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pl-64 transition-colors duration-500">
+    // FIXED: Changed 'pl-64' to 'md:pl-64' for mobile responsiveness
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 md:pl-64 transition-colors duration-500">
       <Navbar />
-      <div className="p-4 md:p-8 max-w-7xl mx-auto h-[calc(100vh-2rem)]">
+      <div className="p-4 md:p-8 max-w-7xl mx-auto min-h-[calc(100vh-8rem)] md:h-[calc(100vh-2rem)]">
         
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           <button onClick={() => navigate('/admin')} className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 mb-4 transition">
             <ArrowLeft className="w-5 h-5" /> Back to Dashboard
           </button>
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Admin Messages & Support 💬</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">Admin Messages & Support 💬</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">Reply to student inquiries in real-time.</p>
         </motion.div>
 
         {/* Chat Interface */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden flex h-[calc(100%-120px)]"
+          // FIXED: Changed to flex-col on mobile, flex-row on desktop. Adjusted height for mobile.
+          className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col md:flex-row h-[calc(100vh-250px)] md:h-[calc(100%-120px)]"
         >
           
           {/* LEFT: Conversations List */}
-          <div className="w-80 border-r border-gray-100 dark:border-gray-700 flex flex-col bg-gray-50/50 dark:bg-gray-900/30">
+          {/* FIXED: Hidden on mobile when a student is selected, full width on mobile otherwise */}
+          <div className={`w-full md:w-80 border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-700 flex flex-col bg-gray-50/50 dark:bg-gray-900/30 ${selectedStudentId ? 'hidden md:flex' : 'flex'}`}>
             <div className="p-4 border-b border-gray-100 dark:border-gray-700">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -177,7 +173,7 @@ export default function AdminMessages() {
                   <div 
                     key={chat.id}
                     onClick={() => setSelectedStudentId(chat.id)}
-                    className={`p-4 flex items-center gap-3 cursor-pointer hover:bg-white dark:hover:bg-gray-700/50 transition border-b border-gray-100 dark:border-gray-700/50 ${selectedStudentId === chat.id ? 'bg-white dark:bg-gray-700/80 border-l-4 border-l-purple-600' : ''}`}
+                    className={`p-4 flex items-center gap-3 cursor-pointer hover:bg-white dark:hover:bg-gray-700/50 transition border-b border-gray-100 dark:border-gray-700/50 ${selectedStudentId === chat.id ? 'bg-white dark:bg-gray-700/80 border-l-4 border-l-purple-600 md:border-l-4' : ''}`}
                   >
                     <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
                       {chat.name.charAt(0).toUpperCase()}
@@ -185,7 +181,7 @@ export default function AdminMessages() {
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-center mb-1">
                         <p className="font-semibold text-sm text-gray-800 dark:text-white truncate">{chat.name}</p>
-                        <span className="text-[10px] text-gray-400">{formatTime(chat.time)}</span>
+                        <span className="text-[10px] text-gray-400 flex-shrink-0">{formatTime(chat.time)}</span>
                       </div>
                       <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{chat.lastMessage}</p>
                     </div>
@@ -196,24 +192,29 @@ export default function AdminMessages() {
           </div>
 
           {/* RIGHT: Active Chat Window */}
-          <div className="flex-1 flex flex-col bg-white dark:bg-gray-800">
+          {/* FIXED: Hidden on mobile when NO student is selected, full width on mobile when selected */}
+          <div className={`flex-1 flex flex-col bg-white dark:bg-gray-800 ${!selectedStudentId ? 'hidden md:flex' : 'flex'}`}>
             {selectedStudent ? (
               <>
                 {/* Chat Header */}
                 <div className="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center gap-3 bg-gray-50/50 dark:bg-gray-900/30">
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                  {/* Mobile Back Button */}
+                  <button onClick={() => setSelectedStudentId(null)} className="md:hidden p-2 -ml-2 mr-1 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full transition">
+                    <ArrowLeft className="w-5 h-5" />
+                  </button>
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
                     {selectedStudent.name.charAt(0).toUpperCase()}
                   </div>
-                  <div>
-                    <p className="font-bold text-gray-800 dark:text-white">{selectedStudent.name}</p>
+                  <div className="min-w-0">
+                    <p className="font-bold text-gray-800 dark:text-white truncate">{selectedStudent.name}</p>
                     <p className="text-xs text-green-500 flex items-center gap-1">
-                      <span className="w-2 h-2 bg-green-500 rounded-full"></span> Student
+                      <span className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></span> Student
                     </p>
                   </div>
                 </div>
 
                 {/* Messages Area */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900/50 dark:to-gray-800">
+                <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900/50 dark:to-gray-800">
                   {activeMessages.map((msg, index) => {
                     const isAdmin = msg.sender_role === 'admin';
                     return (
@@ -228,7 +229,7 @@ export default function AdminMessages() {
                             <User className="w-4 h-4 text-white" />
                           </div>
                         )}
-                        <div className={`max-w-[70%] px-4 py-3 rounded-2xl shadow-sm ${
+                        <div className={`max-w-[85%] md:max-w-[70%] px-4 py-3 rounded-2xl shadow-sm ${
                           isAdmin 
                             ? 'bg-gradient-to-r from-purple-600 to-green-600 text-white rounded-bl-sm' 
                             : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-white border border-gray-100 dark:border-gray-600 rounded-br-sm'
@@ -264,7 +265,7 @@ export default function AdminMessages() {
                       whileTap={{ scale: 0.95 }}
                       type="submit" 
                       disabled={!newMessage.trim() || isSending}
-                      className="w-10 h-10 bg-gradient-to-r from-purple-600 to-green-600 rounded-full flex items-center justify-center text-white hover:shadow-lg hover:shadow-purple-500/30 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-10 h-10 bg-gradient-to-r from-purple-600 to-green-600 rounded-full flex items-center justify-center text-white hover:shadow-lg hover:shadow-purple-500/30 transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
                     >
                       {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                     </motion.button>

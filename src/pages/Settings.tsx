@@ -15,7 +15,8 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pl-64 transition-colors duration-500">
+    // FIXED: Changed 'pl-64' to 'md:pl-64' for mobile responsiveness
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 md:pl-64 transition-colors duration-500">
       <Navbar />
       <div className="p-4 md:p-8 max-w-4xl mx-auto">
         
@@ -23,7 +24,7 @@ export default function Settings() {
           <button onClick={() => navigate('/admin')} className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 mb-4 transition">
             <ArrowLeft className="w-5 h-5" /> Back to Dashboard
           </button>
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Platform Settings ⚙️</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">Platform Settings ⚙️</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">Configure global app settings and contact information.</p>
         </motion.div>
 
@@ -71,7 +72,7 @@ export default function Settings() {
           </div>
 
           <div className="flex justify-end pt-4">
-            <button type="submit" className="btn-primary flex items-center gap-2">
+            <button type="submit" className="btn-primary flex items-center justify-center gap-2 w-full md:w-auto">
               <Save className="w-5 h-5" /> 
               {saved ? 'Settings Saved!' : 'Save Changes'}
             </button>

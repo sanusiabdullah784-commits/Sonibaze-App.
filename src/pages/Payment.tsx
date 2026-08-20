@@ -90,7 +90,8 @@ export default function Payment() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pl-64 transition-colors duration-500">
+    // FIXED: Changed 'pl-64' to 'md:pl-64' for mobile responsiveness
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 md:pl-64 transition-colors duration-500">
       <Navbar />
       
       <div className="p-4 md:p-8 max-w-5xl mx-auto">
@@ -99,14 +100,14 @@ export default function Payment() {
           <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 mb-4 transition font-medium">
             <ArrowLeft className="w-5 h-5" /> Back to Dashboard
           </button>
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Payment & Verification 💳</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">Payment & Verification 💳</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">Upload your payment evidence to activate your training account.</p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
           {/* LEFT: Upload Area */}
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="lg:col-span-2 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700">
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="lg:col-span-2 bg-white dark:bg-gray-800 p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700">
             <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Upload Payment Evidence</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Please make your payment to the official SoniBaze bank account, then upload a clear screenshot or photo of the transaction receipt below.</p>
             

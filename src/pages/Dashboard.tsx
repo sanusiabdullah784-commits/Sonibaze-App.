@@ -2,12 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, Calendar, Monitor, BookOpen, CheckCircle, Bell, X, Megaphone, CreditCard, AlertTriangle, Pause, Play } from 'lucide-react';
 import Navbar from '../components/Navbar';
-import PWAInstallPrompt from '../components/PWAInstallPrompt'; // <-- Added PWA Install Prompt
+import PWAInstallPrompt from '../components/PWAInstallPrompt';
 import { supabase } from '../services/supabaseClient';
 
 // Helper function to calculate dynamic time left, accounting for paused days
 const calculateDynamicTimeLeft = (endDateStr: string, startDateStr: string, pausedDays: number = 0) => {
-  // Add paused days to the end date (in milliseconds)
   const end = new Date(endDateStr).getTime() + (pausedDays * 24 * 60 * 60 * 1000);
   const start = new Date(startDateStr).getTime();
   const now = new Date().getTime();
@@ -109,12 +108,13 @@ export default function Dashboard() {
   const unreadCount = studentNotifications.filter(n => !n.read).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 pl-64 transition-colors duration-500">
+    // FIXED: Changed 'pl-64' to 'md:pl-64' so it only pushes content on desktop, not mobile!
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 md:pl-64 transition-colors duration-500">
       <Navbar />
       <div className="p-4 md:p-8">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800 dark:text-white transition-colors">Welcome back, {studentData?.full_name?.split(' ')[0] || 'Student'}! 👋</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white transition-colors">Welcome back, {studentData?.full_name?.split(' ')[0] || 'Student'}! 👋</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-1 transition-colors">Here is your training progress for today.</p>
           </div>
           <div className="relative" ref={dropdownRef}>

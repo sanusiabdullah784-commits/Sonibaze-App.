@@ -151,7 +151,8 @@ export default function Students() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pl-64 transition-colors duration-500">
+    // FIXED: Changed 'pl-64' to 'md:pl-64' for mobile responsiveness
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 md:pl-64 transition-colors duration-500">
       <Navbar />
       
       <AnimatePresence>
@@ -169,7 +170,7 @@ export default function Students() {
 
       <div className="p-4 md:p-8 max-w-7xl mx-auto">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Student Management 👥</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">Student Management 👥</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">Set schedules, grant leave, and manage student statuses.</p>
         </motion.div>
 
@@ -184,7 +185,7 @@ export default function Students() {
           {/* Archive Toggle */}
           <button 
             onClick={() => setShowArchived(!showArchived)}
-            className={`flex items-center gap-2 px-4 py-3 rounded-xl font-semibold text-sm transition border ${
+            className={`w-full md:w-auto flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-sm transition border ${
               showArchived 
                 ? 'bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300' 
                 : 'bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600'
@@ -204,8 +205,8 @@ export default function Students() {
                 <thead className="bg-gray-50 dark:bg-gray-700/50">
                   <tr className="text-xs uppercase text-gray-500 dark:text-gray-400 font-semibold">
                     <th className="p-4">Student</th>
-                    <th className="p-4">Schedule</th>
-                    <th className="p-4">Paused Days</th>
+                    <th className="p-4 hidden sm:table-cell">Schedule</th>
+                    <th className="p-4 hidden md:table-cell">Paused Days</th>
                     <th className="p-4">Status</th>
                     <th className="p-4 text-right">Actions</th>
                   </tr>
@@ -228,10 +229,16 @@ export default function Students() {
                             <div>
                               <p className="font-semibold text-gray-800 dark:text-white">{student.full_name || 'Unknown'}</p>
                               <p className="text-xs text-gray-500 dark:text-gray-400">{student.email}</p>
+                              {/* Show schedule on mobile if hidden */}
+                              {student.start_date && student.end_date && (
+                                <p className="text-xs text-gray-500 dark:text-gray-400 sm:hidden mt-1">
+                                  {student.start_date} to {student.end_date}
+                                </p>
+                              )}
                             </div>
                           </div>
                         </td>
-                        <td className="p-4">
+                        <td className="p-4 hidden sm:table-cell">
                           {student.start_date && student.end_date ? (
                             <div className="flex flex-col text-sm text-gray-600 dark:text-gray-300">
                               <span>Start: <span className="font-semibold text-gray-800 dark:text-white">{student.start_date}</span></span>
@@ -241,7 +248,7 @@ export default function Students() {
                             <span className="text-xs text-yellow-600 dark:text-yellow-400 font-semibold flex items-center gap-1"><AlertCircle className="w-3 h-3" /> Not Set</span>
                           )}
                         </td>
-                        <td className="p-4">
+                        <td className="p-4 hidden md:table-cell">
                           {student.paused_days > 0 ? (
                             <span className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-full text-xs font-bold">
                               <Pause className="w-3 h-3" /> {student.paused_days} Days

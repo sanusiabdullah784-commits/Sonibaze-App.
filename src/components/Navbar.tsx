@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, BookOpen, Calendar, CreditCard, User, LogOut, Bell, 
-  BarChart3, Users, MessageSquare, Settings, Megaphone, X, CheckCircle, AlertTriangle
+  BarChart3, Users, MessageSquare, Settings, Megaphone, X, CheckCircle, AlertTriangle,
+  Menu
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
@@ -11,16 +12,16 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [showNotifModal, setShowNotifModal] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // <-- Added mobile menu state
 
   const isAdmin = location.pathname.startsWith('/admin');
 
-  // Added "Messages" to the Student Menu!
   const studentMenu = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
     { name: 'My Courses', icon: BookOpen, path: '/courses' },
     { name: 'Schedule', icon: Calendar, path: '/schedule' },
     { name: 'Payments', icon: CreditCard, path: '/payments' },
-    { name: 'Messages', icon: MessageSquare, path: '/messages' }, // <-- Added here!
+    { name: 'Messages', icon: MessageSquare, path: '/messages' },
     { name: 'Profile', icon: User, path: '/profile' },
   ];
 
@@ -37,7 +38,6 @@ export default function Navbar() {
   const menuItems = isAdmin ? adminMenu : studentMenu;
   const portalName = isAdmin ? 'Admin Console' : 'Student Portal';
 
-  // Mock Notifications (Works for both Student and Admin)
   const notificationsList = [
     { id: 1, title: 'System Update', message: 'Platform successfully updated to v2.0.', time: '10 mins ago', icon: CheckCircle, color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400', read: false },
     { id: 2, title: 'New Activity', message: 'A new student just registered for UI/UX Design.', time: '1 hour ago', icon: Users, color: 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400', read: false },
@@ -48,7 +48,28 @@ export default function Navbar() {
     <>
       <ThemeToggle />
 
-      {/* NOTIFICATION MODAL (Triggered by Sidebar Button) */}
+      {/* MOBILE HAMBURGER BUTTON - Only visible on phones */}
+      <button
+        onClick={() => setIsMobileMenuOpen(true)}
+        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700"
+      >
+        <Menu className="w-6 h-6 text-gray-700 dark:text-gray-300" />
+      </button>
+
+      {/* MOBILE OVERLAY - Dark background when menu is open */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* NOTIFICATION MODAL */}
       <AnimatePresence>
         {showNotifModal && (
           <motion.div 
@@ -96,14 +117,28 @@ export default function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* The Sidebar */}
+      {/* THE SIDEBAR - Hidden on mobile, slides in when triggered */}
       <motion.div 
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="fixed left-0 top-0 h-full w-64 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-r border-gray-200 dark:border-gray-700 shadow-2xl flex flex-col p-6 z-40 transition-colors duration-500"
+        initial={false}
+        animate={{ 
+          x: isMobileMenuOpen ? 0 : (typeof window !== 'undefined' && window.innerWidth < 768 ? -300 : 0),
+          opacity: 1
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className={`fixed left-0 top-0 h-full w-64 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl border-r border-gray-200 dark:border-gray-700 shadow-2xl flex flex-col p-6 z-50 transition-colors duration-500
+          md:translate-x-0 md:z-40
+          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        `}
       >
-        <div className="flex items-center gap-3 mb-10">
+        {/* Close button for mobile */}
+        <button 
+          onClick={() => setIsMobileMenuOpen(false)}
+          className="md:hidden absolute top-4 right-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition"
+        >
+          <X className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+        </button>
+
+        <div className="flex items-center gap-3 mb-10 mt-2">
           <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
             <h1 className="text-xl font-black text-white">S|B</h1>
           </div>
@@ -113,13 +148,16 @@ export default function Navbar() {
           </div>
         </div>
 
-        <nav className="flex-1 space-y-2">
+        <nav className="flex-1 space-y-2 overflow-y-auto">
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <button
                 key={item.name}
-                onClick={() => navigate(item.path)}
+                onClick={() => {
+                  navigate(item.path);
+                  setIsMobileMenuOpen(false); // Close menu on mobile when clicking
+                }}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                   isActive 
                     ? 'bg-gradient-to-r from-purple-600 to-green-600 text-white shadow-lg' 
@@ -134,9 +172,11 @@ export default function Navbar() {
         </nav>
 
         <div className="space-y-3 mt-auto">
-          {/* WORKING NOTIFICATIONS BUTTON */}
           <button 
-            onClick={() => setShowNotifModal(true)}
+            onClick={() => {
+              setShowNotifModal(true);
+              setIsMobileMenuOpen(false);
+            }}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-purple-600 dark:hover:text-purple-400 transition"
           >
             <Bell className="w-5 h-5 text-gray-400" />

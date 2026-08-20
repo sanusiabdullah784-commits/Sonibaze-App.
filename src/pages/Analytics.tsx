@@ -27,7 +27,8 @@ export default function Analytics() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pl-64 transition-colors duration-500">
+    // FIXED: Changed 'pl-64' to 'md:pl-64' for mobile responsiveness
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 md:pl-64 transition-colors duration-500">
       <Navbar />
       <div className="p-4 md:p-8 max-w-7xl mx-auto">
         
@@ -36,12 +37,12 @@ export default function Analytics() {
           <button onClick={() => navigate('/admin')} className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 mb-4 transition">
             <ArrowLeft className="w-5 h-5" /> Back to Dashboard
           </button>
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Analytics & Graphs 📊</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">Analytics & Graphs 📊</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">Visual overview of platform performance.</p>
         </motion.div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-8">
           {[
             { title: 'Monthly Growth', value: '+24%', icon: TrendingUp, color: 'text-green-600 bg-green-100 dark:bg-green-900/30' },
             { title: 'New Students', value: '142', icon: Users, color: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30' },
@@ -52,14 +53,14 @@ export default function Analytics() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center gap-4"
+              className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center gap-4"
             >
               <div className={`p-3 rounded-xl ${stat.color}`}>
-                <stat.icon className="w-6 h-6" />
+                <stat.icon className="w-5 h-5 md:w-6 md:h-6" />
               </div>
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{stat.title}</p>
-                <p className="text-2xl font-bold text-gray-800 dark:text-white">{stat.value}</p>
+                <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">{stat.title}</p>
+                <p className="text-xl md:text-2xl font-bold text-gray-800 dark:text-white">{stat.value}</p>
               </div>
             </motion.div>
           ))}
@@ -70,9 +71,9 @@ export default function Analytics() {
           {/* Bar Chart: Monthly Revenue */}
           <motion.div 
             initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
-            className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700"
+            className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700"
           >
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
+            <h3 className="text-lg md:text-xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-purple-600" /> Monthly Revenue (Millions ₦)
             </h3>
             
@@ -100,9 +101,9 @@ export default function Analytics() {
           {/* Horizontal Bar Chart: Course Popularity */}
           <motion.div 
             initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-            className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700"
+            className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700"
           >
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-6">Course Popularity</h3>
+            <h3 className="text-lg md:text-xl font-bold text-gray-800 dark:text-white mb-6">Course Popularity</h3>
             
             <div className="space-y-6">
               {courseStats.map((course, index) => {

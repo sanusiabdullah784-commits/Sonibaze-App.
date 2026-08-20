@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { User, Mail, Phone, BookOpen, Calendar, Shield, ArrowLeft, Edit, Loader2, AlertCircle, X, Save } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import NotificationSettings from '../components/NotificationSettings'; // <-- Added Notification Settings
+import NotificationSettings from '../components/NotificationSettings';
 import { supabase } from '../services/supabaseClient';
 
 export default function Profile() {
@@ -66,7 +66,8 @@ export default function Profile() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pl-64 flex items-center justify-center">
+      // FIXED: Changed 'pl-64' to 'md:pl-64'
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 md:pl-64 flex items-center justify-center">
         <Loader2 className="w-12 h-12 text-purple-600 animate-spin" />
       </div>
     );
@@ -82,7 +83,8 @@ export default function Profile() {
   const studentId = profile?.id ? `SBD-${profile.id.substring(0, 6).toUpperCase()}` : 'SBD-000000';
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pl-64 transition-colors duration-500">
+    // FIXED: Changed 'pl-64' to 'md:pl-64'
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 md:pl-64 transition-colors duration-500">
       <Navbar />
       <div className="p-4 md:p-8 max-w-4xl mx-auto">
         
@@ -92,13 +94,13 @@ export default function Profile() {
             <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 mb-4 transition">
               <ArrowLeft className="w-5 h-5" /> Back to Dashboard
             </button>
-            <h1 className="text-3xl font-bold text-gray-800 dark:text-white">My Profile 👤</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">My Profile 👤</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-1">Manage your personal information and training details.</p>
           </div>
           {/* WORKING EDIT BUTTON */}
           <button 
             onClick={() => setShowEditModal(true)}
-            className="btn-primary flex items-center gap-2"
+            className="btn-primary flex items-center gap-2 text-sm md:text-base"
           >
             <Edit className="w-4 h-4" /> Edit Profile
           </button>

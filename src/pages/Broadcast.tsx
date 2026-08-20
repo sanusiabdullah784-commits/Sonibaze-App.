@@ -112,7 +112,8 @@ export default function Broadcast() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pl-64 transition-colors duration-500">
+    // FIXED: Changed 'pl-64' to 'md:pl-64' for mobile responsiveness
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 md:pl-64 transition-colors duration-500">
       <Navbar />
       <div className="p-4 md:p-8 max-w-7xl mx-auto">
         
@@ -126,7 +127,7 @@ export default function Broadcast() {
               <Megaphone className="w-7 h-7 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Broadcast Center 📢</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">Broadcast Center 📢</h1>
               <p className="text-gray-500 dark:text-gray-400 mt-1">Send instant announcements to your students.</p>
             </div>
           </div>
@@ -137,9 +138,9 @@ export default function Broadcast() {
           {showSuccess && (
             <motion.div 
               initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -50 }}
-              className="fixed top-24 right-8 z-50 bg-green-50 dark:bg-green-900/80 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-100 px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 backdrop-blur-md"
+              className="fixed top-24 right-4 left-4 md:left-auto md:w-auto z-50 bg-green-50 dark:bg-green-900/80 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-100 px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 backdrop-blur-md"
             >
-              <CheckCircle className="w-6 h-6" />
+              <CheckCircle className="w-6 h-6 flex-shrink-0" />
               <div>
                 <p className="font-bold">Broadcast Sent Successfully!</p>
                 <p className="text-xs opacity-80">Notifications have been pushed to all selected students.</p>
@@ -153,7 +154,7 @@ export default function Broadcast() {
           {/* LEFT: Compose Broadcast Form */}
           <motion.div 
             initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}
-            className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 md:p-8"
+            className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 md:p-8"
           >
             <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-purple-600" /> Compose New Message
@@ -229,7 +230,7 @@ export default function Broadcast() {
                   whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                   type="submit" 
                   disabled={isSending || !formData.subject || !formData.message}
-                  className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-white transition-all duration-200 ${
+                  className={`w-full md:w-auto flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-bold text-white transition-all duration-200 ${
                     isSending || !formData.subject || !formData.message
                       ? 'bg-gray-300 dark:bg-gray-700 cursor-not-allowed' 
                       : 'bg-gradient-to-r from-purple-600 to-green-600 hover:shadow-lg hover:shadow-purple-500/30'
@@ -253,7 +254,7 @@ export default function Broadcast() {
           {/* RIGHT: Broadcast History */}
           <motion.div 
             initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 md:p-6"
           >
             <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
               <History className="w-5 h-5 text-blue-600 dark:text-blue-400" /> Recent Broadcasts

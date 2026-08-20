@@ -69,7 +69,8 @@ export default function AdminPayments() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pl-64 transition-colors duration-500">
+    // FIXED: Changed 'pl-64' to 'md:pl-64' for mobile responsiveness
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 md:pl-64 transition-colors duration-500">
       <Navbar />
       
       {/* Toast Notification */}
@@ -95,7 +96,7 @@ export default function AdminPayments() {
           <button onClick={() => navigate('/admin')} className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 mb-4 transition">
             <ArrowLeft className="w-5 h-5" /> Back to Dashboard
           </button>
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Payment Verification 💳</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">Payment Verification 💳</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">Review and approve student payment evidence from the cloud.</p>
         </motion.div>
 
@@ -105,7 +106,7 @@ export default function AdminPayments() {
           className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6 flex flex-col md:flex-row gap-4"
         >
           {/* Search Input */}
-          <div className="relative flex-1">
+          <div className="relative flex-1 w-full">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input 
               type="text" 
@@ -117,7 +118,7 @@ export default function AdminPayments() {
           </div>
 
           {/* Status Filter Dropdown */}
-          <div className="relative md:w-48">
+          <div className="relative w-full md:w-48">
             <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
             <select 
               value={statusFilter}
