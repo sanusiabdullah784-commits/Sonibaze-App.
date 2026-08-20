@@ -66,8 +66,14 @@ export default function Register() {
 
         if (dbError) throw dbError;
         
-        alert('Account created successfully! Please check your email to confirm, then login.');
-        navigate('/');
+        // If email confirmation is OFF, Supabase logs them in immediately!
+        if (authData.session) {
+          navigate('/dashboard');
+        } else {
+          // Fallback if email confirmation is somehow still ON in Supabase settings
+          setError('Account created! Please check your email to confirm, then login.');
+          setTimeout(() => navigate('/'), 3000);
+        }
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred during registration.');
@@ -78,14 +84,14 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 flex items-center justify-center p-4 relative overflow-hidden transition-colors duration-500">
-      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-2xl border border-white/50 dark:border-gray-700 relative z-10 transition-colors duration-500">
+      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-6 md:p-10 rounded-3xl shadow-2xl w-full max-w-2xl border border-white/50 dark:border-gray-700 relative z-10 transition-colors duration-500">
         
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-4 mb-6 md:mb-8">
           <button onClick={() => navigate('/')} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition">
             <ArrowLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
           </button>
           <div>
-            <h2 className="text-2xl font-bold text-blue-900 dark:text-white transition-colors">Create Your Account</h2>
+            <h2 className="text-xl md:text-2xl font-bold text-blue-900 dark:text-white transition-colors">Create Your Account</h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm transition-colors">Join SoniBaze Digital today</p>
           </div>
         </div>
@@ -96,7 +102,7 @@ export default function Register() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
           
           {/* Row 1: Full Name & Phone Number */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
