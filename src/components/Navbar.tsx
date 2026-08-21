@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, BookOpen, Calendar, CreditCard, User, LogOut, Bell, 
   BarChart3, Users, MessageSquare, Settings, Megaphone, X, CheckCircle, AlertTriangle,
-  Menu
+  Menu, Download, Smartphone
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
@@ -12,7 +12,32 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [showNotifModal, setShowNotifModal] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // <-- Added mobile menu state
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  // PWA Install States
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showIOSModal, setShowIOSModal] = useState(false);
+
+  // Listen for the browser's install prompt
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
+
+  const handleInstallClick = () => {
+    if (deferredPrompt) {
+      // Android/Chrome: Trigger the native install prompt
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(() => setDeferredPrompt(null));
+    } else {
+      // iOS/Safari: Show manual instructions
+      setShowIOSModal(true);
+    }
+  };
 
   const isAdmin = location.pathname.startsWith('/admin');
 
@@ -48,7 +73,7 @@ export default function Navbar() {
     <>
       <ThemeToggle />
 
-      {/* MOBILE HAMBURGER BUTTON - Only visible on phones */}
+      {/* MOBILE HAMBURGER BUTTON */}
       <button
         onClick={() => setIsMobileMenuOpen(true)}
         className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700"
@@ -56,7 +81,7 @@ export default function Navbar() {
         <Menu className="w-6 h-6 text-gray-700 dark:text-gray-300" />
       </button>
 
-      {/* MOBILE OVERLAY - Dark background when menu is open */}
+      {/* MOBILE OVERLAY */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -66,6 +91,37 @@ export default function Navbar() {
             onClick={() => setIsMobileMenuOpen(false)}
             className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
           />
+        )}
+      </AnimatePresence>
+
+      {/* iOS INSTALL INSTRUCTIONS MODAL */}
+      <AnimatePresence>
+        {showIOSModal && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+            onClick={() => setShowIOSModal(false)}
+          >
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white dark:bg-gray-800 rounded-3xl w-full max-w-sm shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden p-6 text-center"
+            >
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Smartphone className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Install on iPhone</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                To install <strong>SONIBAZE DIGITAL</strong> on your home screen:
+              </p>
+              <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl text-left text-sm text-gray-700 dark:text-gray-300 space-y-2 mb-4">
+                <p>1. Tap the <strong>Share</strong> button <span className="text-blue-500">️</span> at the bottom of Safari.</p>
+                <p>2. Scroll down and tap <strong>"Add to Home Screen"</strong>.</p>
+                <p>3. Tap <strong>"Add"</strong> in the top right corner.</p>
+              </div>
+              <button onClick={() => setShowIOSModal(false)} className="w-full btn-primary">Got it!</button>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
 
@@ -117,7 +173,7 @@ export default function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* THE SIDEBAR - Hidden on mobile, slides in when triggered */}
+      {/* THE SIDEBAR */}
       <motion.div 
         initial={false}
         animate={{ 
@@ -130,7 +186,6 @@ export default function Navbar() {
           ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         `}
       >
-        {/* Close button for mobile */}
         <button 
           onClick={() => setIsMobileMenuOpen(false)}
           className="md:hidden absolute top-4 right-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition"
@@ -156,7 +211,7 @@ export default function Navbar() {
                 key={item.name}
                 onClick={() => {
                   navigate(item.path);
-                  setIsMobileMenuOpen(false); // Close menu on mobile when clicking
+                  setIsMobileMenuOpen(false);
                 }}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                   isActive 
@@ -172,6 +227,17 @@ export default function Navbar() {
         </nav>
 
         <div className="space-y-3 mt-auto">
+          {/* INSTALL APP BUTTON */}
+          {!deferredPrompt && !showIOSModal && (
+            <button 
+              onClick={handleInstallClick}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+            >
+              <Download className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              <span className="font-semibold text-sm">Install App</span>
+            </button>
+          )}
+
           <button 
             onClick={() => {
               setShowNotifModal(true);
