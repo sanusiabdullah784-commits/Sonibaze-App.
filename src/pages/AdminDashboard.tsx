@@ -4,13 +4,40 @@ import {
   Users, BookOpen, DollarSign, TrendingUp, Search, 
   Download, CheckCircle, XCircle, Clock, Activity, Bell, Ban, AlertTriangle, X
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import { supabase } from '../services/supabaseClient';
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [notification, setNotification] = useState<{ message: string, type: 'success' | 'error' | 'warning' } | null>(null);
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // SECURITY CHECK: Kick out non-admins instantly
+  useEffect(() => {
+    const checkAdminAccess = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate('/');
+        return;
+      }
+
+      const { data: adminData, error } = await supabase
+        .from('admins')
+        .select('id')
+        .eq('id', user.id)
+        .single();
+
+      if (error || !adminData) {
+        // Not an admin! Sign them out and kick them to login
+        await supabase.auth.signOut();
+        navigate('/');
+      }
+    };
+    checkAdminAccess();
+  }, [navigate]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -83,7 +110,6 @@ export default function AdminDashboard() {
   const unreadCount = notificationsList.filter(n => !n.read).length;
 
   return (
-    // FIXED: Changed 'pl-64' to 'md:pl-64' for mobile responsiveness
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 md:pl-64 transition-colors duration-500">
       <Navbar />
       

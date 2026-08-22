@@ -31,8 +31,20 @@ export default function Login() {
       }
 
       if (data.user) {
-        // Successfully logged in! Redirect to dashboard.
-        navigate('/dashboard');
+        // Check if the user is an Admin
+        const { data: adminData, error: adminError } = await supabase
+          .from('admins')
+          .select('id')
+          .eq('id', data.user.id)
+          .single();
+
+        if (adminError || !adminData) {
+          // Not an admin, redirect to student dashboard
+          navigate('/dashboard');
+        } else {
+          // Is an admin, redirect to admin dashboard
+          navigate('/admin');
+        }
       }
     } catch (err: any) {
       // Handle specific Supabase errors nicely
@@ -60,13 +72,13 @@ export default function Login() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-10 rounded-3xl shadow-2xl w-full max-w-md border border-white/50 dark:border-gray-700 relative z-10 transition-colors duration-500"
+          className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-md border border-white/50 dark:border-gray-700 relative z-10 transition-colors duration-500"
         >
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-600 to-green-600 rounded-2xl shadow-lg mb-4">
-              <h1 className="text-4xl font-black text-white">S<span className="mx-0.5">|</span>B</h1>
+          <div className="text-center mb-8 md:mb-10">
+            <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-purple-600 to-green-600 rounded-2xl shadow-lg mb-4">
+              <h1 className="text-3xl md:text-4xl font-black text-white">S<span className="mx-0.5">|</span>B</h1>
             </div>
-            <h2 className="text-3xl font-bold text-blue-900 dark:text-white transition-colors">SoniBaze</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-blue-900 dark:text-white transition-colors">SoniBaze</h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 font-medium transition-colors">Student Management Platform</p>
           </div>
 
@@ -80,7 +92,7 @@ export default function Login() {
             </motion.div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-5 md:space-y-6">
             <div>
               <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm transition-colors">Email Address</label>
               <div className="relative">
@@ -138,7 +150,7 @@ export default function Login() {
             </motion.button>
           </form>
 
-          <div className="relative my-8">
+          <div className="relative my-6 md:my-8">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-200 dark:border-gray-700 transition-colors"></div>
             </div>
